@@ -1,5 +1,7 @@
 package com.example.littlelemon
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -26,19 +28,23 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.edit
+import androidx.navigation.NavController
 
 val greyColor = Color(133, 134, 144)
 
 @Composable
-fun Onboarding() {
+fun Onboarding(navController: NavController) {
+
+    val context = LocalContext.current
 
     var firstName by remember {
-        mutableStateOf("Tilly")
+        mutableStateOf("")
     }
 
     var lastName by remember {
@@ -49,22 +55,46 @@ fun Onboarding() {
         mutableStateOf("")
     }
 
+    fun saveSharedPreferences() {
+        context.getSharedPreferences("data", Context.MODE_PRIVATE).edit {
+            putString("firstName", firstName)
+            putString("lastName", lastName)
+            putString("emailAddress", emailAddress)
+        }.apply {}
+    }
+
+    fun onSubmit() {
+        if (firstName.isNotEmpty() && lastName.isNotEmpty() && emailAddress.isNotEmpty()) {
+            saveSharedPreferences()
+            Toast.makeText(
+                context,
+                "Registration successful!",
+                Toast.LENGTH_LONG
+            ).show()
+            navController.navigate(Destinations.HOME)
+        } else {
+            print("SOME TEXT")
+            Toast.makeText(
+                context,
+                "Registration unsuccessful. Please enter all data.",
+                Toast.LENGTH_LONG
+            ).show()
+        }
+    }
+
     Column {
         Header()
         Title()
-        Form(firstName = firstName,
+        Form(
+            firstName = firstName,
             lastName = lastName,
             emailAddress = emailAddress,
             setFirstName = { value -> firstName = value },
             setLastName = { value -> lastName = value },
-            setEmailAddress = { value -> emailAddress = value })
+            setEmailAddress = { value -> emailAddress = value },
+            onSubmit = { onSubmit() }
+        )
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun OnboardingPreview() {
-    Onboarding()
 }
 
 @Composable
@@ -133,7 +163,8 @@ fun Form(
     emailAddress: String,
     setFirstName: (value: String) -> Unit,
     setLastName: (value: String) -> Unit,
-    setEmailAddress: (value: String) -> Unit
+    setEmailAddress: (value: String) -> Unit,
+    onSubmit: () -> Unit
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -159,7 +190,7 @@ fun Form(
             FormField(value = emailAddress, onValueChange = setEmailAddress, "Email")
         }
         Button(
-            onClick = { /*TODO*/ },
+            onClick = onSubmit,
             shape = RoundedCornerShape(7.dp),
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color(244, 206, 20)
