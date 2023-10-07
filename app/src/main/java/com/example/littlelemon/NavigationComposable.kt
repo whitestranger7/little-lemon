@@ -1,7 +1,6 @@
 package com.example.littlelemon
 
 import android.content.Context.MODE_PRIVATE
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
@@ -16,12 +15,8 @@ fun Navigation(navController: NavHostController) {
     val lastName = sharedPreferences.getString("lastName", "")
     val email = sharedPreferences.getString("emailAddress", "")
 
-    val isAuthorized = sharedPreferences.getString("firstName", "")
-        ?.isNotEmpty() == true && sharedPreferences.getString("lastName", "")
-        ?.isNotEmpty() == true && sharedPreferences.getString("emailAddress", "")
-        ?.isNotEmpty() == true
-
-    Log.d("Navigation", "isAuthorized: $firstName $lastName $email")
+    val isAuthorized =
+        firstName?.isNotEmpty() == true && lastName?.isNotEmpty() == true && email?.isNotEmpty() == true
 
     val startDestination = if (isAuthorized) Destinations.HOME else Destinations.ONBOARDING
 
@@ -30,10 +25,10 @@ fun Navigation(navController: NavHostController) {
             Onboarding(navController = navController)
         }
         composable(Destinations.HOME) {
-            Home()
+            Home(navController = navController)
         }
         composable(Destinations.PROFILE) {
-            Profile()
+            Profile(navController = navController)
         }
     }
 }
