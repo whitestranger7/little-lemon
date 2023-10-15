@@ -12,8 +12,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Search
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -32,64 +36,67 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun HomeBanner() {
-    Text(
-        text = "Little Lemon", fontSize = 32.sp, style = TextStyle(
-            color = Color(244, 206, 20)
-        )
-    )
-    Row {
-        Column(
-            modifier = Modifier
-                .weight(1f)
-                .padding(end = 15.dp)
-        ) {
-            Text(
-                text = "Chicago", fontSize = 26.sp, style = TextStyle(
-                    color = Color(255, 255, 255)
-                )
-            )
-            Text(
-                text = "We are a family owned Mediterranian restaurant, " +
-                        "focused on traditional recipes served with a modern twist",
-                fontSize = 16.sp,
-                style = TextStyle(
-                    color = Color(255, 255, 255)
-                )
-            )
-        }
-        Row(
-            horizontalArrangement = Arrangement.End
-        ) {
-            Image(
-                painter = painterResource(R.drawable.hero_image),
-                contentDescription = "Hero Image",
-                modifier = Modifier
-                    .size(100.dp)
-                    .clip(RoundedCornerShape(10)),
-                contentScale = ContentScale.FillWidth
-            )
-        }
-    }
-}
-
-@Composable
-private fun TextInput(
-    value: String,
-    onValueChange: (value: String) -> Unit,
+private fun HomeBanner(
+    inputValue: String,
+    onChangeInputValue: (value: String) -> Unit,
 ) {
-    Row(
-        modifier = Modifier.padding(top = 10.dp)
+    Column(
+        modifier = Modifier.padding(20.dp)
     ) {
-        BasicTextField(
-            value = value,
-            onValueChange = onValueChange,
+        Text(
+            text = "Little Lemon", fontSize = 32.sp, style = TextStyle(
+                color = Color(244, 206, 20)
+            )
+        )
+        Row(
+            modifier = Modifier
+                .padding(bottom = 20.dp)
+        ) {
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(end = 15.dp)
+            ) {
+                Text(
+                    text = "Chicago", fontSize = 26.sp, style = TextStyle(
+                        color = Color(255, 255, 255)
+                    )
+                )
+                Text(
+                    text = "We are a family owned Mediterranian restaurant, " +
+                            "focused on traditional recipes served with a modern twist",
+                    fontSize = 16.sp,
+                    style = TextStyle(
+                        color = Color(255, 255, 255)
+                    )
+                )
+            }
+            Row(
+                horizontalArrangement = Arrangement.End
+            ) {
+                Image(
+                    painter = painterResource(R.drawable.hero_image),
+                    contentDescription = "Hero Image",
+                    modifier = Modifier
+                        .size(100.dp)
+                        .clip(RoundedCornerShape(10)),
+                    contentScale = ContentScale.FillWidth
+                )
+            }
+        }
+        TextField(
+            value = inputValue,
+            onValueChange = onChangeInputValue,
             singleLine = true,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(40.dp)
-                .background(Color(234, 234, 234))
+                .background(Color(234, 234, 234)),
+            leadingIcon = {
+                Icon(Icons.Rounded.Search, contentDescription = "Search Icon")
+            },
         )
     }
 }
@@ -113,17 +120,12 @@ fun Home(navController: NavController) {
                 .fillMaxWidth()
                 .background(Color(73, 94, 87))
         ) {
-            Column(
-                modifier = Modifier.padding(20.dp)
-            ) {
-                HomeBanner()
-                TextInput(
-                    value = inputValue,
-                    onValueChange = {
-                        inputValue = it
-                    }
-                )
-            }
+            HomeBanner(
+                inputValue = inputValue,
+                onChangeInputValue = {
+                    inputValue = it
+                }
+            )
         }
     }
 }
