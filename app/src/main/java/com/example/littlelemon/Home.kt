@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -92,11 +91,13 @@ private fun HomeBanner(
             singleLine = true,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(40.dp)
                 .background(Color(234, 234, 234)),
             leadingIcon = {
                 Icon(Icons.Rounded.Search, contentDescription = "Search Icon")
             },
+            placeholder = {
+                Text(text = "Enter search phrase")
+            }
         )
     }
 }
